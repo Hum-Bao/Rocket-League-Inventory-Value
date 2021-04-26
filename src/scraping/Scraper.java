@@ -45,7 +45,7 @@ public class Scraper {
 			//}
 			String text = element.getTextContent();
 			text = text.replaceAll("\\s", "");
-			if ( text.equals(" ") || text.equals("?")) {
+			if (text.equals(" ")||text.equals("â€ƒ") || text.equals("?")) {
 				GUI.text.append("Credit amount = " + "No credit information"+"\n\n");
 			}
 			/*
@@ -61,10 +61,8 @@ public class Scraper {
 			else {
 				GUI.text.append("Credit amount = " + text+"\n\n");
 				String splitInt[] = text.split("-");
-				for (String temp: splitInt) {
-				if (count%2 == 0) sum2+=Integer.parseInt(temp);
-					else sum1+=Integer.parseInt(temp);
-				}
+				sum2+=Integer.parseInt(splitInt[1]);
+				sum1+=Integer.parseInt(splitInt[0]);
 			}
 			//webClient.close();
 		}
