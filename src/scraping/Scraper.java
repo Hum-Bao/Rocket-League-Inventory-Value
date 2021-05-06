@@ -6,30 +6,47 @@ import java.util.ArrayList;
 public class Scraper {
 	
 	//protected static void recieveItems (ArrayList<String> itemsParsed, String slot) {
-	protected static final WebClient webClient = new WebClient();
-	public static int sum1 = 0;
-	public static int sum2 = 0;
-	public static int count = 0;
+	private static final WebClient webClient = new WebClient();
+	private static int sum1 = 0;
+	private static int sum2 = 0;
+	//private static int count = 0;
 	//protected static int blueprintSum1 = 0;
 	//protected static int blueprintSum2 = 0;
-	protected static boolean printValue = false;
+	private static boolean printValue = false;
 	
-	protected static void recieveItems (ArrayList<String> itemsParsed) {
-		int arraySize = itemsParsed.size();
+	public static int getSum1() {return sum1;}
+	public static int getSum2() {return sum2;}
+	public static void resetSums() {
+		sum1 = 0;
+		sum2 = 0;
+	}
+	public static boolean getPrintValue() {return printValue;}
+	public static void updatePrintValue() {
+		if(printValue == false) printValue = true;
+		else printValue = false;
+	}
+	public static void updatePrintValue(boolean value) {printValue = value;}
+	
+	public static void recieveItems (ArrayList<String> itemsParsed) {
+		setWebClientOptions();
 		for (int count = 0; count < itemsParsed.size(); count++) {
 			String searchQuery = itemsParsed.get(count);
-			GUI.text.append("Currently checking ID: " + searchQuery+"\n");
+			GUI.appendText("Currently checking ID: " + searchQuery+"\n");
 			//search(searchQuery, arraySize, slot);
-			search(searchQuery, arraySize);
+			search(searchQuery);
 		}
 		webClient.close();
 	}
+	
+	public static void setWebClientOptions() {
+		webClient.getOptions().setCssEnabled(false);
+		webClient.getOptions().setJavaScriptEnabled(false);
+		webClient.getOptions().setDownloadImages(false);
+	}
+	
 	//protected static void search(String searchQuery, int arraySize, String slot) {
-	protected static void search(String searchQuery, int arraySize) {
+	public static void search(String searchQuery) {
 		try {
-			webClient.getOptions().setCssEnabled(false);
-			webClient.getOptions().setJavaScriptEnabled(false);
-			webClient.getOptions().setDownloadImages(false);
 			final String searchUrl = "https://rl.insider.gg/en/pc/" + searchQuery;
 			final HtmlPage page = webClient.getPage(searchUrl);
 			//DomElement element = null;
@@ -41,12 +58,12 @@ public class Scraper {
 			}
 			*/
 			//else {
-				DomElement element = page.getFirstByXPath("/html/body/div[8]/div[4]/div[2]/table/tbody/tr[2]/td[2]");
+				final DomElement element = page.getFirstByXPath("/html/body/div[8]/div[4]/div[2]/table/tbody/tr[2]/td[2]");
 			//}
-			String text = element.getTextContent();
-			text = text.replaceAll("\\s", "");
+			String text = element.getTextContent().replaceAll("\\s","");
+			//text = text.replaceAll("\\s", "");
 			if (text.equals(" ")||text.equals("â€ƒ") || text.equals("?")) {
-				GUI.text.append("Credit amount = " + "No credit information"+"\n\n");
+				GUI.appendText("Credit amount = " + "No credit information"+"\n\n");
 			}
 			/*
 			else if (blueprint == true) {
@@ -59,20 +76,19 @@ public class Scraper {
 			}
 			*/
 			else {
-				GUI.text.append("Credit amount = " + text+"\n\n");
+				GUI.appendText("Credit amount = " + text+"\n\n");
 				String splitInt[] = text.split("-");
 				sum2+=Integer.parseInt(splitInt[1]);
 				sum1+=Integer.parseInt(splitInt[0]);
 			}
-			//webClient.close();
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			GUI.text.append(e.getMessage());
+			GUI.appendText(e.getMessage());
 		}
-		count++;
-		if (count == arraySize) {
-			printValue = true;
-		}
+		//count++;
+		//if (count == arraySize) {
+			//printValue = true;
+		//}
 	}
 }

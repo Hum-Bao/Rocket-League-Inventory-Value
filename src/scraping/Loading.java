@@ -5,9 +5,8 @@ import java.util.List;
 
 public class Loading  {
 	private static byte anim;
-	protected static String animText = "";
-	protected static void animate() {
-		
+	private static String animText = "";
+	public static void animate() {
 		 switch (anim) {
          case 1:
         	 animText = "[ \\ ]";
@@ -24,29 +23,21 @@ public class Loading  {
      }
      anim++;
  }
-	protected static void worker () {
+	public static void worker () {
 	SwingWorker<Void, String> loadingThread = new SwingWorker<Void, String>() {
 		@Override
-		protected Void doInBackground() throws Exception {
-			while (!Scraper.printValue) {
+		public Void doInBackground() throws Exception {
+			while (!Scraper.getPrintValue()) {
 				animate();
 				publish(animText);
-				try {
-					Thread.sleep(900);
-				} catch (InterruptedException e) {
-					System.out.println("Thread 2 interrupted");
-				}
+				try {Thread.sleep(900);} catch (InterruptedException e) {System.out.println("Thread 2 interrupted");}
 			}
 			return null;
 		}
 		@Override
-		protected void process(List<String> chunks) {
+		public void process(List<String> chunks) {
 			String animTextOut = chunks.get(chunks.size()-1);
-			GUI.output.setText(animTextOut);
-		}
-		@Override
-		protected void done() {
-
+			GUI.updateOutput(animTextOut);
 		}
 	};
 	loadingThread.execute();
