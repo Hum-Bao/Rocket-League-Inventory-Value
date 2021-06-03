@@ -2,6 +2,8 @@ package scraping;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.DomText;
+
 import java.util.ArrayList;
 public class Scraper {
 	
@@ -21,10 +23,8 @@ public class Scraper {
 		sum2 = 0;
 	}
 	public static boolean getPrintValue() {return printValue;}
-	public static void updatePrintValue() {
-		if(printValue == false) printValue = true;
-		else printValue = false;
-	}
+	public static void updatePrintValue() {printValue = !printValue;}
+	
 	public static void updatePrintValue(boolean value) {printValue = value;}
 	
 	public static void recieveItems (ArrayList<String> itemsParsed) {
@@ -58,9 +58,12 @@ public class Scraper {
 			}
 			*/
 			//else {
-				final DomElement element = page.getFirstByXPath("/html/body/div[8]/div[4]/div[2]/table/tbody/tr[2]/td[2]");
+				final DomElement itemValue = page.getFirstByXPath("/html/body/div[8]/div[4]/div[2]/table/tbody/tr[2]/td[2]");
+				final DomText itemName = page.getFirstByXPath("/html/body/div[8]/div[5]/a[1]/div/h2/text()[1]");
+				if(itemName != null) GUI.appendText("Name: " + itemName + "\n");	
+				else GUI.appendText("Item not found\n\n");
 			//}
-			String text = element.getTextContent().replaceAll("\\s","");
+			String text = itemValue.getTextContent().replaceAll("\\s","");
 			//text = text.replaceAll("\\s", "");
 			if (text.equals(" ")||text.equals("â€ƒ") || text.equals("?")) {
 				GUI.appendText("Credit amount = " + "No credit information"+"\n\n");
